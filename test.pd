@@ -1,0 +1,19 @@
+#N canvas 615 245 563 425 10;
+#X obj 191 210 dac~;
+#X obj 195 109 phd~;
+#X obj 76 8 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 12700 1;
+#X msg 73 43 controlChange 31 \$1;
+#X obj 196 142 *~ 0.5;
+#X msg 254 42 noteOn \$1 100;
+#X obj 76 8 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 257 8 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 2800 1;
+#X connect 1 0 4 0;
+#X connect 2 0 3 0;
+#X connect 3 0 1 0;
+#X connect 4 0 0 0;
+#X connect 4 0 0 1;
+#X connect 5 0 1 0;
+#X connect 7 0 5 0;
