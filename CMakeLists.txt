@@ -9,17 +9,14 @@ add_definitions(-DPD)
 
 if(APPLE)
    include_directories(/Applications/Pd-0.47.app/Contents/Resources/src/)
-   link_directories(/Applications/Pd-0.47.app/Contents/Resources/bin/)
    set(LIB_SUFFIX ".pd_darwin")
-   set(CMAKE_SHARED_LINKER_FLAGS "-undefined dynamic_lookup -flat_namespace ${CMAKE_SHARED_LINKER_FLAGS}")
+   set(CMAKE_SHARED_LINKER_FLAGS "-undefined dynamic_lookup ${CMAKE_SHARED_LINKER_FLAGS}")
    set(LINK_LIBRARIES)
 endif(APPLE)
 
 if(UNIX AND NOT APPLE)
    include_directories(/usr/local/include)
-   #link_directories(/Applications/Pd-0.47.app/Contents/Resources/bin/)
    set(LIB_SUFFIX ".pd_linux")
-   #set(CMAKE_SHARED_LINKER_FLAGS "-undefined dynamic_lookup -flat_namespace ${CMAKE_SHARED_LINKER_FLAGS}")
    set(LINK_LIBRARIES m c)
 endif(UNIX AND NOT APPLE)
 
