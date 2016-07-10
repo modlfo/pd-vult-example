@@ -14,3 +14,12 @@ $ make
 ```
 
 This will produce the file `phd~.pd_darwin` or `phd~.pd_linux`. Put this file in a place where Pure Data can find it and open the `test.pd` file.
+
+The source of the oscillator is the file `phasedist.vult`. In order to modify or regenerate the code you need to have the development version of Vult (https://github.com/modlfo/vult).
+
+To regenerate the code run:
+```
+$ ./vultc.native -ccode -template pd -o phd phasedist.vult
+```
+
+This will generate the files `phd.cpp` and `phd.h`.
