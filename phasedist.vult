@@ -28,7 +28,7 @@ fun phasor(pitch,reset){
 
 // Main processing function
 fun process(input:real){
-   mem volume,detune; // values set in 'controlChange'
+   mem detune; // values set in 'controlChange'
    mem pitch;
    mem pre_phase1;
    // Implements the resonant filter simulation as shown in
@@ -39,7 +39,7 @@ fun process(input:real){
    pre_phase1 = phase1;
    val phase2 = phasor(pitch+smooth(detune)*32.0,reset);
    val sine  = sin(2.0*3.14159265359*phase2);
-   return smooth(volume)*(sine*comp);
+   return sine*comp;
 }
 
 // Called when a note On is received
@@ -53,16 +53,12 @@ and noteOff(note:int){
 
 // Called when a control changes
 and controlChange(control:int,value:int){
-   mem volume;
    mem detune;
-   // Control 30 defines the volume
-   if(control==30) volume = real(value)/127.0;
    if(control==31) detune = real(value)/127.0;
 }
 
 // Called on initialization to define initial values
 and default(){
-   mem volume = 0.0;
    mem pitch = 45.0;
    mem detune = 0.0;
 }
