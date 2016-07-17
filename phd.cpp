@@ -109,41 +109,49 @@ extern "C" {
 static t_class *phd_tilde_class;
 
 typedef struct _phd_tilde {
-  t_object  x_obj;
-  float dummy;
-  Phasedist_process_type data;
+   t_object  x_obj;
+   float dummy;
+   Phasedist_process_type data;
 } t_phd_tilde;
 
 t_int *phd_tilde_perform(t_int *w)
 {
-  t_phd_tilde *x = (t_phd_tilde *)(w[1]);
-  t_sample      *in = (t_sample *)(w[2]);
-  t_sample     *out = (t_sample *)(w[3]);
-  int             n = (int)(w[4]);
+   t_phd_tilde *x = (t_phd_tilde *)(w[1]);
 
-  while (n--) *out++ = Phasedist_process(x->data,*(in++));
+   t_sample *in_0 = (t_sample *)(w[2]);
+   t_sample *out_0 = (t_sample *)(w[3]);
 
-  return (w+5);
+   int n = (int)(w[4]);
+
+   while (n--) {
+   float ret = Phasedist_process(x->data,(float) *(in_0++));
+   *(out_0++) = (float) ret;
+   }
+
+   return (w+5);
 }
 
 void phd_tilde_dsp(t_phd_tilde *x, t_signal **sp)
 {
-  dsp_add(phd_tilde_perform, 4,
-          x,
-          sp[0]->s_vec,
-          sp[1]->s_vec,
-          sp[0]->s_n);
+   dsp_add(phd_tilde_perform, 4,
+   x,
+   sp[0]->s_vec,
+   sp[1]->s_vec,
+
+   sp[0]->s_n);
 }
 
 void *phd_tilde_new()
 {
-  t_phd_tilde *x = (t_phd_tilde *)pd_new(phd_tilde_class);
+   t_phd_tilde *x = (t_phd_tilde *)pd_new(phd_tilde_class);
 
-  x->data = Phasedist_process_init();
-  Phasedist_default(x->data);
-  outlet_new(&x->x_obj, &s_signal);
+   x->data = Phasedist_process_init();
+   Phasedist_default(x->data);
 
-  return (void *)x;
+
+   outlet_new(&x->x_obj, &s_signal);
+
+   return (void *)x;
 }
 
 void phd_tilde_delete(t_phd_tilde *x){
@@ -151,34 +159,32 @@ void phd_tilde_delete(t_phd_tilde *x){
 }
 
 void phd_noteOn(t_phd_tilde *x, t_floatarg note, t_floatarg velocity){
-  if((int)velocity) Phasedist_noteOn(x->data, (int)note, (int)velocity);
-  else Phasedist_noteOff(x->data, (int)note);
+   if((int)velocity) Phasedist_noteOn(x->data, (int)note, (int)velocity);
+   else Phasedist_noteOff(x->data, (int)note);
 }
 
 void phd_noteOff(t_phd_tilde *x, t_floatarg note) {
-  Phasedist_noteOff(x->data, (int)note);
+   Phasedist_noteOff(x->data, (int)note);
 }
 
 void phd_controlChange(t_phd_tilde *x, t_floatarg control, t_floatarg value) {
-  Phasedist_controlChange(x->data, (int)control, (int)value);
+   Phasedist_controlChange(x->data, (int)control, (int)value);
 }
 
 void phd_tilde_setup(void) {
-  phd_tilde_class = class_new(gensym("phd~"),
-        (t_newmethod)phd_tilde_new, // constructor function
-        (t_method)phd_tilde_delete, // destructor function
-        sizeof(t_phd_tilde), // size of the object
-        CLASS_DEFAULT, // type of object
-        A_NULL); // arguments passed
+   phd_tilde_class = class_new(gensym("phd~"),
+      (t_newmethod)phd_tilde_new, // constructor function
+      (t_method)phd_tilde_delete, // destructor function
+      sizeof(t_phd_tilde), // size of the object
+      CLASS_DEFAULT, // type of object
+      A_NULL); // arguments passed
 
-  class_addmethod(phd_tilde_class,
-        (t_method)phd_tilde_dsp, gensym("dsp"), A_NULL);
-  CLASS_MAINSIGNALIN(phd_tilde_class, t_phd_tilde, dummy);
+   class_addmethod(phd_tilde_class,(t_method)phd_tilde_dsp, gensym("dsp"), A_NULL);
+   CLASS_MAINSIGNALIN(phd_tilde_class, t_phd_tilde, dummy);
 
-  class_addmethod(phd_tilde_class, (t_method)phd_noteOn,        gensym("noteOn"),        A_DEFFLOAT, A_DEFFLOAT, A_NULL);
-  class_addmethod(phd_tilde_class, (t_method)phd_noteOff,       gensym("noteOff"),       A_DEFFLOAT, A_NULL);
-  class_addmethod(phd_tilde_class, (t_method)phd_controlChange, gensym("controlChange"), A_DEFFLOAT, A_DEFFLOAT, A_NULL);
-
+   class_addmethod(phd_tilde_class, (t_method)phd_noteOn,        gensym("noteOn"),        A_DEFFLOAT, A_DEFFLOAT, A_NULL);
+   class_addmethod(phd_tilde_class, (t_method)phd_noteOff,       gensym("noteOff"),       A_DEFFLOAT, A_NULL);
+   class_addmethod(phd_tilde_class, (t_method)phd_controlChange, gensym("controlChange"), A_DEFFLOAT, A_DEFFLOAT, A_NULL);
 }
 
 } // extern "C"
