@@ -32,7 +32,8 @@ void Phasedist_change_init(Phasedist__ctx_type_1 &_output_){
 }
 
 uint8_t Phasedist_change(Phasedist__ctx_type_1 &_ctx, float x){
-   uint8_t v = (_ctx.pre_x != x);
+   uint8_t v;
+   v = (_ctx.pre_x != x);
    _ctx.pre_x = x;
    return v;
 }
@@ -56,12 +57,14 @@ void Phasedist_phasor_init(Phasedist__ctx_type_3 &_output_){
 }
 
 float Phasedist_phasor(Phasedist__ctx_type_3 &_ctx, float pitch, uint8_t reset){
-   if(Phasedist_change(_ctx._inst1,pitch)){
+   uint8_t _cond_3;
+   _cond_3 = Phasedist_change(_ctx._inst1,pitch);
+   if(_cond_3){
       _ctx.rate = Phasedist_pitchToRate(pitch);
    }
-   if(reset)_ctx.phase = 0.f;
+   if(reset){ _ctx.phase = 0.f; }
    else
-   _ctx.phase = fmodf((_ctx.phase + _ctx.rate),1.f);
+   { _ctx.phase = fmodf((_ctx.phase + _ctx.rate),1.f); }
    return _ctx.phase;
 }
 
@@ -83,12 +86,17 @@ void Phasedist_process_init(Phasedist__ctx_type_4 &_output_){
 }
 
 float Phasedist_process(Phasedist__ctx_type_4 &_ctx, float input){
-   float phase1 = Phasedist_phasor(_ctx._inst1,_ctx.pitch,0);
-   float comp = (1.f + (- phase1));
-   uint8_t reset = ((_ctx.pre_phase1 + (- phase1)) > 0.5f);
+   float phase1;
+   phase1 = Phasedist_phasor(_ctx._inst1,_ctx.pitch,0);
+   float comp;
+   comp = (1.f + (- phase1));
+   uint8_t reset;
+   reset = ((_ctx.pre_phase1 + (- phase1)) > 0.5f);
    _ctx.pre_phase1 = phase1;
-   float phase2 = Phasedist_phasor(_ctx._inst3,(_ctx.pitch + (Phasedist_smooth(_ctx._inst2,_ctx.detune) * 32.f)),reset);
-   float sine = sinf((6.28318530718f * phase2));
+   float phase2;
+   phase2 = Phasedist_phasor(_ctx._inst3,(_ctx.pitch + (Phasedist_smooth(_ctx._inst2,_ctx.detune) * 32.f)),reset);
+   float sine;
+   sine = sinf((6.28318530718f * phase2));
    return (sine * comp);
 }
 
@@ -115,7 +123,9 @@ void Phasedist_controlChange_init(Phasedist__ctx_type_4 &_output_){
 }
 
 void Phasedist_controlChange(Phasedist__ctx_type_4 &_ctx, int control, int value){
-   if(control == 31){
+   uint8_t _cond_2;
+   _cond_2 = (control == 31);
+   if(_cond_2){
       _ctx.detune = (int_to_float(value) * 0.00787401574803f);
    }
 }
@@ -216,4 +226,3 @@ void phd_tilde_setup(void) {
 }
 
 } // extern "C"
-
