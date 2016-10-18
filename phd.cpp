@@ -105,7 +105,7 @@ void Phasedist_noteOn_init(Phasedist__ctx_type_4 &_output_){
    return ;
 }
 
-void Phasedist_noteOn(Phasedist__ctx_type_4 &_ctx, int note, int velocity){
+void Phasedist_noteOn(Phasedist__ctx_type_4 &_ctx, int note, int velocity, int channel){
    _ctx.pitch = int_to_float(note);
 }
 
@@ -114,7 +114,7 @@ void Phasedist_noteOff_init(Phasedist__ctx_type_4 &_output_){
    return ;
 }
 
-void Phasedist_noteOff(Phasedist__ctx_type_4 &_ctx, int note){
+void Phasedist_noteOff(Phasedist__ctx_type_4 &_ctx, int note, int channel){
 }
 
 void Phasedist_controlChange_init(Phasedist__ctx_type_4 &_output_){
@@ -122,7 +122,7 @@ void Phasedist_controlChange_init(Phasedist__ctx_type_4 &_output_){
    return ;
 }
 
-void Phasedist_controlChange(Phasedist__ctx_type_4 &_ctx, int control, int value){
+void Phasedist_controlChange(Phasedist__ctx_type_4 &_ctx, int control, int value, int channel){
    uint8_t _cond_2;
    _cond_2 = (control == 31);
    if(_cond_2){
@@ -196,17 +196,17 @@ void phd_tilde_delete(t_phd_tilde *x){
 
 }
 
-void phd_noteOn(t_phd_tilde *x, t_floatarg note, t_floatarg velocity){
-   if((int)velocity) Phasedist_noteOn(x->data, (int)note, (int)velocity);
-   else Phasedist_noteOff(x->data, (int)note);
+void phd_noteOn(t_phd_tilde *x, t_floatarg note, t_floatarg velocity, t_floatarg channel){
+   if((int)velocity) Phasedist_noteOn(x->data, (int)note, (int)velocity, (int)channel);
+   else Phasedist_noteOff(x->data, (int)note, (int)channel);
 }
 
-void phd_noteOff(t_phd_tilde *x, t_floatarg note) {
-   Phasedist_noteOff(x->data, (int)note);
+void phd_noteOff(t_phd_tilde *x, t_floatarg note, t_floatarg channel) {
+   Phasedist_noteOff(x->data, (int)note, (int)channel);
 }
 
-void phd_controlChange(t_phd_tilde *x, t_floatarg control, t_floatarg value) {
-   Phasedist_controlChange(x->data, (int)control, (int)value);
+void phd_controlChange(t_phd_tilde *x, t_floatarg control, t_floatarg value, t_floatarg channel) {
+   Phasedist_controlChange(x->data, (int)control, (int)value, (int)channel);
 }
 
 void phd_tilde_setup(void) {
@@ -220,9 +220,9 @@ void phd_tilde_setup(void) {
    class_addmethod(phd_tilde_class,(t_method)phd_tilde_dsp, gensym("dsp"), A_NULL);
    CLASS_MAINSIGNALIN(phd_tilde_class, t_phd_tilde, dummy);
 
-   class_addmethod(phd_tilde_class, (t_method)phd_noteOn,        gensym("noteOn"),        A_DEFFLOAT, A_DEFFLOAT, A_NULL);
-   class_addmethod(phd_tilde_class, (t_method)phd_noteOff,       gensym("noteOff"),       A_DEFFLOAT, A_NULL);
-   class_addmethod(phd_tilde_class, (t_method)phd_controlChange, gensym("controlChange"), A_DEFFLOAT, A_DEFFLOAT, A_NULL);
+   class_addmethod(phd_tilde_class, (t_method)phd_noteOn,        gensym("noteOn"),        A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, A_NULL);
+   class_addmethod(phd_tilde_class, (t_method)phd_noteOff,       gensym("noteOff"),       A_DEFFLOAT, A_DEFFLOAT, A_NULL);
+   class_addmethod(phd_tilde_class, (t_method)phd_controlChange, gensym("controlChange"), A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, A_NULL);
 }
 
 } // extern "C"
